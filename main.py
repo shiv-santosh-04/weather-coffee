@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from models import UserLogin
 from database import SessionLocal, engine
 from database_models import User
@@ -7,6 +8,15 @@ import requests
 from sqlalchemy.orm import Session
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 base_url = "https://pokeapi.co/api/v2/"
 
