@@ -34,6 +34,23 @@ weather-coffee/
 
 Follow these steps to run both the backend and frontend.
 
+### Docker Integration
+
+The Docker setup mirrors the same backend and database flow used in local development:
+
+1. The frontend container serves the Vite app on port `5173`.
+2. The backend container runs FastAPI on port `8000`.
+3. The backend reads `DATABASE_URL` from `.env` and uses the Postgres service name `postgres` as the host.
+4. Inside Docker, `localhost` would point to the container itself, so the database host must be the Compose service name instead of `localhost`.
+
+The current `.env` file is already set up for Docker usage:
+
+```env
+DATABASE_URL=postgresql://admin:password@postgres:5432/weather_coffee_db
+```
+
+That value works because all Compose services share the same internal network, so the backend can resolve `postgres` directly.
+
 ### Prerequisites
 
 Ensure you have the following installed:
@@ -59,6 +76,8 @@ Ensure you have the following installed:
    ```
    The backend will be running at `http://localhost:8000`.
 
+If you are running the backend outside Docker and using a local Postgres server, change `DATABASE_URL` to use `localhost` instead of `postgres`.
+
 ---
 
 ### Step 2: Run the Frontend (React + Tailwind)
@@ -73,6 +92,19 @@ Ensure you have the following installed:
    ```
    The frontend will be running locally at `http://localhost:5173`.
 3. Open your browser and navigate to **`http://localhost:5173`**.
+
+### Step 3: Run Everything with Docker
+
+1. Make sure Docker Desktop or the Docker Engine is running.
+2. From the project root, start the stack:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Open the app in your browser:
+   * Frontend: `http://localhost:5173`
+   * Backend: `http://localhost:8000`
+
+The Compose file builds the backend from the repository root, passes `.env` into the backend container, and starts Postgres first so the FastAPI app can connect successfully.
 
 ---
 
